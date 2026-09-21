@@ -54,7 +54,7 @@ function Navbar({ onLogin }) {
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/80 bg-white/95 backdrop-blur">
-      <div className="mx-auto flex h-25 max-w-7xl items-center justify-between px-5 sm:px-6 lg:px-8">
+      <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 sm:px-6 lg:px-8">
         {/* Logo */}
         <a href="#home" className="flex items-center gap-3">
           <div className="flex items-center justify-center overflow-hidden rounded-xl">
@@ -66,7 +66,7 @@ function Navbar({ onLogin }) {
           </div>
 
           <div>
-            <div className="text-3xl font-bold tracking-tight text-primary">
+            <div className="text-2xl font-bold tracking-tight text-primary">
               Land<span className="text-secondary">Stack</span>
             </div>
 
@@ -88,7 +88,7 @@ function Navbar({ onLogin }) {
                 key={item.label}
                 href={item.href}
                 onClick={() => handleNavClick(sectionId)}
-                className={`relative py-2 text-lg font-medium transition-colors duration-200 ${
+                className={`relative py-2 text-sm font-medium transition-colors duration-200 ${
                   isActive
                     ? "text-[#1F7A5A]"
                     : "text-muted hover:text-[#1F7A5A]"
