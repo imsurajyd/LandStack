@@ -61,7 +61,7 @@ function Navbar({ onLogin }) {
             <img
               src={Logo}
               alt="LandStack Logo"
-              className="size-17 object-contain"
+              className="size-15 object-contain"
             />
           </div>
 
