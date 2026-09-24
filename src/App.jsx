@@ -35,7 +35,7 @@ function MainApp() {
     }
   };
 
-  // Browser Navigation / Back Button listener
+  // Browser Navigation / Physical Back Button listener
   useEffect(() => {
     window.history.replaceState({ screen: "landing", landId: null }, "");
 
@@ -74,11 +74,15 @@ function MainApp() {
     return () => window.removeEventListener("popstate", handlePopState);
   }, []);
 
-  // Window Close / Refresh guard
+  // Window Close / Refresh guard (Only active in logged-in screens)
   useEffect(() => {
     const handleBeforeUnload = (e) => {
       const active = currentScreenRef.current;
-      if (active === "dashboard" || active === "profile" || active === "kabala") {
+      if (
+        active === "dashboard" ||
+        active === "profile" ||
+        active === "kabala"
+      ) {
         e.preventDefault();
         e.returnValue = "";
         return "";
@@ -96,25 +100,29 @@ function MainApp() {
 
   const handleConfirmExit = () => {
     setShowExitModal(false);
+    setSelectedLand(null);
     navigateTo("landing", null, true); // Safely end session and return to landing
   };
 
   return (
     <div className="relative min-h-screen w-full bg-background antialiased selection:bg-primary/20">
+      {/* 1. LANDING PAGE */}
       {currentScreen === "landing" && (
         <LandingPage onLogin={() => navigateTo("login")} />
       )}
 
+      {/* 2. DYNAMIC LOGIN PAGE (Receives verified Raiyat userId from Mobile/ULPIN) */}
       {currentScreen === "login" && (
         <LoginPage
-          onLoginSuccess={(id) => {
-            setUserId(id);
+          onLoginSuccess={(authenticatedUserId) => {
+            setUserId(authenticatedUserId || "USR-1001");
             navigateTo("dashboard", null, true);
           }}
           onBack={() => navigateTo("landing", null, true)}
         />
       )}
 
+      {/* 3. CONSOLIDATED CITIZEN DASHBOARD */}
       {currentScreen === "dashboard" && (
         <Dashboard
           userId={userId}
@@ -125,6 +133,7 @@ function MainApp() {
         />
       )}
 
+      {/* 4. LAND PROFILE VIEW */}
       {currentScreen === "profile" && (
         <LandProfile
           land={selectedLand}
@@ -133,6 +142,7 @@ function MainApp() {
         />
       )}
 
+      {/* 5. DEDICATED KABALA (SALE DEED) VIEWER PAGE */}
       {currentScreen === "kabala" && (
         <KabalaViewerPage
           land={selectedLand}
@@ -177,7 +187,9 @@ function MainApp() {
                 className="inline-flex items-center gap-1.5 rounded-xl bg-red-600 px-4 py-2 text-xs sm:text-sm font-semibold text-white shadow-xs transition hover:bg-red-700 active:scale-95"
               >
                 <LogOut className="size-3.5" />
-                <span>{language === "hi" ? "हाँ, बाहर जाएं" : "Yes, Exit"}</span>
+                <span>
+                  {language === "hi" ? "हाँ, बाहर जाएं" : "Yes, Exit"}
+                </span>
               </button>
             </div>
           </div>
