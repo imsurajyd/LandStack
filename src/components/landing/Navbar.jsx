@@ -1,19 +1,21 @@
+// src/components/landing/Navbar.jsx
 import { useEffect, useState } from "react";
-import { Menu, X, ArrowRight } from "lucide-react";
-import Logo from "../../assets/Logo.png";
+import { Menu, X, ArrowRight, Languages } from "lucide-react";
+import BrandLogo from "../common/BrandLogo";
+import { useLanguage } from "../../context/LanguageContext";
 
 function Navbar({ onLogin }) {
+  const { language, toggleLanguage, t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
 
   const navItems = [
-    { label: "Home", href: "#home" },
-    // { label: "About", href: "#about" },
-    { label: "Features", href: "#features" },
-    { label: "How It Works", href: "#how-it-works" },
+    { label: language === "hi" ? "होम" : "Home", href: "#home" },
+    { label: language === "hi" ? "विशेषताएं" : "Features", href: "#features" },
+    { label: language === "hi" ? "कार्यप्रणाली" : "How It Works", href: "#how-it-works" },
   ];
 
-  // Detect active section while scrolling
+  // Active section tracking on scroll
   useEffect(() => {
     const handleScroll = () => {
       const sections = navItems
@@ -21,7 +23,6 @@ function Navbar({ onLogin }) {
         .filter(Boolean);
 
       const scrollPosition = window.scrollY + 140;
-
       let currentSection = "home";
 
       sections.forEach((section) => {
@@ -40,7 +41,23 @@ function Navbar({ onLogin }) {
     handleScroll();
 
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [language]);
+
+  // Background scroll lock when menu opens
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+      document.body.style.touchAction = "none";
+    } else {
+      document.body.style.overflow = "";
+      document.body.style.touchAction = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+      document.body.style.touchAction = "";
+    };
+  }, [isOpen]);
 
   const handleLogin = () => {
     setIsOpen(false);
@@ -53,30 +70,13 @@ function Navbar({ onLogin }) {
   };
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border/80 bg-white/95 backdrop-blur">
-      <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 sm:px-6 lg:px-8">
-        {/* Logo */}
-        <a href="#home" className="flex items-center gap-3">
-          <div className="flex items-center justify-center overflow-hidden rounded-xl">
-            <img
-              src={Logo}
-              alt="LandStack Logo"
-              className="size-12 object-contain"
-            />
-          </div>
-
-          <div>
-            <div className="text-2xl font-bold tracking-tight text-primary">
-              Land<span className="text-secondary">Stack</span>
-            </div>
-
-            <div className="hidden text-[12px] font-medium uppercase tracking-[0.16em] text-muted sm:block">
-              Digital Land Governance
-            </div>
-          </div>
+    <header className="sticky top-0 z-50 w-full border-b border-border/80 bg-white/95 backdrop-blur">
+      {/* Top Navbar Header */}
+      <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-4 sm:h-20 sm:px-6 lg:px-8">
+        <a href="#home" className="flex items-center">
+          <BrandLogo size="md" />
         </a>
 
-        {/* Desktop Navigation */}
         {/* Desktop Navigation */}
         <nav className="hidden items-center gap-8 md:flex">
           {navItems.map((item) => {
@@ -95,8 +95,6 @@ function Navbar({ onLogin }) {
                 }`}
               >
                 {item.label}
-
-                {/* Active underline */}
                 <span
                   className={`absolute bottom-0 left-0 h-0.5 rounded-full bg-[#1F7A5A] transition-all duration-300 ${
                     isActive ? "w-full" : "w-0"
@@ -107,32 +105,100 @@ function Navbar({ onLogin }) {
           })}
         </nav>
 
-        {/* Desktop Login */}
-        <button
-          type="button"
-          onClick={handleLogin}
-          className="hidden items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary-dark hover:shadow-md md:flex"
-        >
-          Login
-          <ArrowRight className="size-4" />
-        </button>
+        {/* Desktop Actions */}
+        <div className="hidden items-center gap-3 md:flex">
+          <button
+            type="button"
+            onClick={toggleLanguage}
+            className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-white px-3 py-2 text-xs font-semibold text-foreground shadow-xs transition hover:bg-slate-50 hover:text-primary active:scale-95"
+            title={language === "en" ? "Switch to हिन्दी" : "Switch to English"}
+          >
+            <Languages className="size-3.5 text-primary" />
+            <span>{t("langToggle")}</span>
+          </button>
 
-        {/* Mobile Menu Button */}
-        <button
-          type="button"
-          onClick={() => setIsOpen((value) => !value)}
-          className="flex size-10 items-center justify-center rounded-xl border border-border text-primary transition-colors hover:bg-background md:hidden"
-          aria-label="Toggle navigation"
-          aria-expanded={isOpen}
-        >
-          {isOpen ? <X className="size-5" /> : <Menu className="size-5" />}
-        </button>
+          <button
+            type="button"
+            onClick={handleLogin}
+            className="flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-primary-dark active:scale-[0.98]"
+          >
+            {language === "hi" ? "प्रवेश" : "Login"}
+            <ArrowRight className="size-4" />
+          </button>
+        </div>
+
+        {/* Mobile Header Actions (Language + Hamburger) */}
+        <div className="flex items-center gap-2 md:hidden">
+          <button
+            type="button"
+            onClick={toggleLanguage}
+            className="inline-flex items-center gap-1 rounded-xl border border-border bg-white px-2.5 py-1.5 text-xs font-semibold text-foreground shadow-xs transition hover:bg-slate-50"
+            title={language === "en" ? "Switch to हिन्दी" : "Switch to English"}
+          >
+            <Languages className="size-3.5 text-primary" />
+            <span>{t("langToggle")}</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setIsOpen(true)}
+            className="flex size-10 items-center justify-center rounded-xl border border-border text-primary hover:bg-slate-50"
+            aria-label="Open Navigation"
+          >
+            <Menu className="size-5" />
+          </button>
+        </div>
       </div>
 
-      {/* Mobile Navigation */}
-      {isOpen && (
-        <div className="border-t border-border bg-white md:hidden">
-          <nav className="mx-auto flex max-w-7xl flex-col px-5 py-4">
+      {/* ========================================================
+          MOBILE OVERLAY & LEFT-TO-RIGHT SLIDE DRAWER
+      ======================================================== */}
+      {/* 1. Backdrop Shade */}
+      <div
+        onClick={() => setIsOpen(false)}
+        className={`fixed inset-0 z-[90] bg-black/40 backdrop-blur-xs transition-opacity duration-300 md:hidden ${
+          isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        }`}
+      />
+
+      {/* 2. Slide Drawer (Fixed Left: -100% se 0% slide) */}
+      <div
+        className={`fixed inset-y-0 left-0 z-[100] flex h-[100dvh] w-screen max-w-full flex-col bg-white shadow-2xl transition-transform duration-300 ease-in-out md:hidden ${
+          isOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        {/* Drawer Header */}
+        <div className="flex h-16 w-full shrink-0 items-center justify-between border-b border-border px-4">
+          <BrandLogo size="md" />
+
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={toggleLanguage}
+              className="inline-flex items-center gap-1 rounded-xl border border-border bg-white px-2.5 py-1.5 text-xs font-semibold text-foreground"
+            >
+              <Languages className="size-3.5 text-primary" />
+              <span>{t("langToggle")}</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setIsOpen(false)}
+              className="flex size-10 items-center justify-center rounded-xl border border-border text-primary hover:bg-slate-50"
+              aria-label="Close Navigation"
+            >
+              <X className="size-5" />
+            </button>
+          </div>
+        </div>
+
+        {/* Drawer Content */}
+        <div className="flex flex-1 flex-col justify-between overflow-y-auto px-5 py-8">
+          <nav className="flex flex-col gap-2">
+            <span className="mb-2 px-2 text-xs font-semibold uppercase tracking-wider text-muted">
+              {language === "hi" ? "नेविगेशन" : "Navigation"}
+            </span>
+
             {navItems.map((item) => {
               const sectionId = item.href.replace("#", "");
               const isActive = activeSection === sectionId;
@@ -142,33 +208,42 @@ function Navbar({ onLogin }) {
                   key={item.label}
                   href={item.href}
                   onClick={() => handleNavClick(sectionId)}
-                  className={`flex items-center justify-between border-b border-border/70 py-3 text-sm font-medium transition-colors last:border-0 ${
+                  className={`flex items-center justify-between rounded-2xl px-4 py-4 text-base font-semibold transition-all ${
                     isActive
-                      ? "font-semibold text-primary"
-                      : "text-muted hover:text-primary"
+                      ? "bg-primary/10 text-primary"
+                      : "text-foreground hover:bg-slate-50 active:bg-slate-100"
                   }`}
                 >
                   <span>{item.label}</span>
-
-                  {isActive && (
-                    <span className="h-2 w-2 rounded-full bg-primary" />
+                  {isActive ? (
+                    <span className="size-2 rounded-full bg-primary" />
+                  ) : (
+                    <ArrowRight className="size-4 text-muted/60" />
                   )}
                 </a>
               );
             })}
+          </nav>
 
-            {/* Mobile Login */}
+          {/* Drawer Bottom Action */}
+          <div className="border-t border-border pt-6 pb-2">
             <button
               type="button"
               onClick={handleLogin}
-              className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-primary-dark"
+              className="flex w-full items-center justify-center gap-2 rounded-2xl bg-primary py-4 text-base font-bold text-white shadow-md transition-transform active:scale-[0.98]"
             >
-              Login
-              <ArrowRight className="size-4" />
+              {language === "hi" ? "लैंडस्टैक में लॉगिन करें" : "Login to LandStack"}
+              <ArrowRight className="size-5" />
             </button>
-          </nav>
+
+            <p className="mt-4 text-center text-xs text-muted">
+              {language === "hi"
+                ? "DILRMP एवं डिजिटल भू-अभिलेख अनुरूप नागरिक पोर्टल"
+                : "DILRMP & Bhu-Aadhaar Aligned Citizen Portal"}
+            </p>
+          </div>
         </div>
-      )}
+      </div>
     </header>
   );
 }

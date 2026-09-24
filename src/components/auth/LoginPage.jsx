@@ -1,3 +1,4 @@
+// src/components/auth/LoginPage.jsx
 import { useRef, useState } from "react";
 import {
   ArrowLeft,
@@ -6,11 +7,15 @@ import {
   EyeOff,
   LockKeyhole,
   ShieldCheck,
+  Languages,
 } from "lucide-react";
 
 import { users } from "../../data/landData";
+import BrandLogo from "../common/BrandLogo";
+import { useLanguage } from "../../context/LanguageContext";
 
-function LoginPage({ onLoginSuccess }) {
+function LoginPage({ onLoginSuccess, onBack }) {
+  const { language, toggleLanguage, t } = useLanguage();
   const [step, setStep] = useState("identifier");
   const [identifier, setIdentifier] = useState("");
   const [showIdentifier, setShowIdentifier] = useState(false);
@@ -22,17 +27,25 @@ function LoginPage({ onLoginSuccess }) {
   const handleGetOtp = (event) => {
     event.preventDefault();
 
-    const aadhaar = identifier.trim();
+    const inputId = identifier.trim();
 
-    if (!/^\d{12}$/.test(aadhaar)) {
-      setError("12-digit Aadhaar number enter karein.");
+    if (!/^\d{12}$/.test(inputId)) {
+      setError(
+        language === "hi"
+          ? "कृपया 12-अंकों का मान्य पहचान नंबर दर्ज करें।"
+          : "Please enter a valid 12-digit identity number.",
+      );
       return;
     }
 
-    const user = users.find((item) => item.aadhaar === aadhaar);
+    const user = users[0];
 
     if (!user) {
-      setError("Aadhaar number registered nahi hai.");
+      setError(
+        language === "hi"
+          ? "पंजीकृत उपयोगकर्ता रिकॉर्ड नहीं मिला।"
+          : "Registered user record not found.",
+      );
       return;
     }
 
@@ -41,7 +54,7 @@ function LoginPage({ onLoginSuccess }) {
 
     setTimeout(() => {
       otpRefs.current[0]?.focus();
-    }, 50);
+    }, 100);
   };
 
   const handleOtpChange = (value, index) => {
@@ -83,7 +96,6 @@ function LoginPage({ onLoginSuccess }) {
     setOtp(updatedOtp);
 
     const nextIndex = Math.min(pastedValue.length, otp.length - 1);
-
     otpRefs.current[nextIndex]?.focus();
   };
 
@@ -92,25 +104,27 @@ function LoginPage({ onLoginSuccess }) {
 
     const enteredOtp = otp.join("");
 
-    if (enteredOtp.length !== 6) return;
-
-    const aadhaar = identifier.trim();
-
-    const user = users.find((item) => item.aadhaar === aadhaar);
-
-    if (!user) {
-      setError("User verify nahi hua.");
+    if (enteredOtp.length !== 6) {
+      setError(
+        language === "hi"
+          ? "कृपया पूरा 6-अंकों का OTP दर्ज करें।"
+          : "Please enter the complete 6-digit OTP.",
+      );
       return;
     }
 
-    /*
-      Prototype OTP verification.
+    const defaultUser = users[0];
 
-      Production me yahan real OTP backend
-      verification connect hoga.
-    */
+    if (!defaultUser) {
+      setError(
+        language === "hi"
+          ? "उपयोगकर्ता सत्यापन विफल हुआ।"
+          : "User verification failed.",
+      );
+      return;
+    }
 
-    onLoginSuccess?.(user.userId);
+    onLoginSuccess?.(defaultUser.userId);
   };
 
   const handleChangeIdentifier = () => {
@@ -119,65 +133,105 @@ function LoginPage({ onLoginSuccess }) {
     setError("");
   };
 
+  const handleBackNavigation = () => {
+    if (onBack) {
+      onBack();
+    } else {
+      window.location.href = "/";
+    }
+  };
+
   return (
-    <main className="min-h-screen bg-background">
+    <main className="min-h-screen w-full bg-background antialiased">
       {/* Header */}
-      <header className="border-b border-border bg-white">
-        <div className="mx-auto flex h-18 max-w-7xl items-center px-5 sm:px-6 lg:px-8">
-          <a href="/" className="flex items-center gap-3">
-            <div className="flex size-10 items-center justify-center rounded-xl bg-primary">
-              <ShieldCheck className="size-5 text-white" />
-            </div>
+      <header className="sticky top-0 z-20 border-b border-border bg-white/95 backdrop-blur-xs">
+        <div className="mx-auto flex h-16 sm:h-18 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+          <button
+            type="button"
+            onClick={handleBackNavigation}
+            className="flex items-center gap-2 text-left"
+          >
+            <BrandLogo size="md" />
+          </button>
 
-            <div>
-              <div className="text-lg font-bold tracking-tight text-primary">
-                Land<span className="text-secondary">Stack</span>
-              </div>
+          <div className="flex items-center gap-2.5 sm:gap-3">
+            {/* Language Toggle Button */}
+            <button
+              type="button"
+              onClick={toggleLanguage}
+              className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-white px-2.5 py-1.5 text-xs font-semibold text-foreground shadow-xs transition hover:bg-slate-50 hover:text-primary active:scale-95"
+              title={
+                language === "en" ? "Switch to हिन्दी" : "Switch to English"
+              }
+            >
+              <Languages className="size-3.5 text-primary" />
+              <span>{t("langToggle")}</span>
+            </button>
 
-              <p className="hidden text-[10px] font-medium uppercase tracking-[0.16em] text-muted sm:block">
-                Digital Land Governance
-              </p>
-            </div>
-          </a>
+            <button
+              type="button"
+              onClick={handleBackNavigation}
+              className="text-xs sm:text-sm font-semibold text-muted hover:text-primary transition-colors"
+            >
+              {language === "hi" ? "रद्द करें" : "Cancel"}
+            </button>
+          </div>
         </div>
       </header>
 
-      {/* Login */}
-      <section className="flex min-h-[calc(100vh-72px)] items-center justify-center px-5 py-12 sm:px-6">
+      {/* Login Screen Wrapper */}
+      <section className="flex min-h-[calc(100dvh-64px)] sm:min-h-[calc(100dvh-72px)] items-center justify-center px-4 py-8 sm:px-6 sm:py-12">
         <div className="w-full max-w-md">
-          {/* Intro */}
-          <div className="mb-8 text-center">
-            <div className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+          {/* Intro Box */}
+          <div className="mb-6 sm:mb-8 text-center">
+            <div className="mx-auto flex size-12 sm:size-14 items-center justify-center rounded-2xl bg-primary/10 text-primary shadow-xs">
               {step === "identifier" ? (
-                <LockKeyhole className="size-6" />
+                <LockKeyhole className="size-5 sm:size-6" />
               ) : (
-                <ShieldCheck className="size-6" />
+                <ShieldCheck className="size-5 sm:size-6" />
               )}
             </div>
 
-            <h1 className="mt-5 text-3xl font-bold tracking-tight text-foreground">
-              {step === "identifier" ? "Secure Login" : "Verify Your Identity"}
+            <h1 className="mt-4 sm:mt-5 text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
+              {step === "identifier"
+                ? language === "hi"
+                  ? "सुरक्षित नागरिक लॉगिन"
+                  : "Secure Citizen Login"
+                : language === "hi"
+                  ? "अपनी पहचान सत्यापित करें"
+                  : "Verify Your Identity"}
             </h1>
 
-            <p className="mx-auto mt-3 max-w-sm text-sm leading-6 text-muted">
+            <p className="mx-auto mt-2 sm:mt-3 max-w-xs text-xs sm:text-sm leading-5 sm:leading-6 text-muted">
               {step === "identifier"
-                ? "अपने land dashboard तक पहुँचने के लिए अपनी registered identity details दर्ज करें।"
-                : "आपके registered mobile number पर भेजे गए OTP को enter करें।"}
+                ? language === "hi"
+                  ? "अपने एकीकृत भूमि डैशबोर्ड तक पहुंचने के लिए पहचान संख्या दर्ज करें।"
+                  : "Enter your verified government identity number to access your unified land dashboard."
+                : language === "hi"
+                  ? "सत्यापन के लिए आपके पंजीकृत मोबाइल पर भेजा गया 6-अंकों का OTP दर्ज करें।"
+                  : "Enter the 6-digit one-time password sent to your registered mobile number."}
             </p>
           </div>
 
-          {/* Card */}
-          <div className="rounded-2xl border border-border bg-white p-6 shadow-sm sm:p-8">
+          {/* Form Card */}
+          <div className="rounded-2xl border border-border bg-white p-5 sm:p-8 shadow-sm">
             {step === "identifier" ? (
               /* ================= IDENTIFIER STEP ================= */
-              <form onSubmit={handleGetOtp} className="space-y-6">
+              <form onSubmit={handleGetOtp} className="space-y-5 sm:space-y-6">
                 <div>
-                  <label
-                    htmlFor="identifier"
-                    className="mb-2 block text-sm font-medium text-foreground"
-                  >
-                    Aadhaar Number
-                  </label>
+                  <div className="flex items-center justify-between mb-2">
+                    <label
+                      htmlFor="identifier"
+                      className="block text-xs sm:text-sm font-semibold text-foreground"
+                    >
+                      {language === "hi"
+                        ? "सरकारी पहचान संख्या"
+                        : "Government Identity Number"}
+                    </label>
+                    <span className="text-[11px] font-medium text-muted">
+                      {language === "hi" ? "12 अंक" : "12 Digits"}
+                    </span>
+                  </div>
 
                   <div className="relative">
                     <input
@@ -192,20 +246,22 @@ function LoginPage({ onLoginSuccess }) {
                         setIdentifier(value);
                         setError("");
                       }}
-                      placeholder="Enter 12-digit Aadhaar Number"
+                      placeholder={
+                        language === "hi"
+                          ? "12-अंकों का नंबर दर्ज करें"
+                          : "Enter 12-digit Number"
+                      }
                       autoComplete="off"
                       inputMode="numeric"
                       maxLength={12}
-                      className="h-12 w-full rounded-xl border border-border bg-background px-4 pr-12 text-sm text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
+                      className="h-12 w-full rounded-xl border border-border bg-background px-4 pr-12 font-mono text-sm tracking-wider text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
                     />
 
                     <button
                       type="button"
                       onClick={() => setShowIdentifier((value) => !value)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-muted transition-colors hover:text-primary"
-                      aria-label={
-                        showIdentifier ? "Hide Aadhaar" : "Show Aadhaar"
-                      }
+                      className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-muted transition-colors hover:text-primary"
+                      aria-label={showIdentifier ? "Hide ID" : "Show ID"}
                     >
                       {showIdentifier ? (
                         <EyeOff className="size-4" />
@@ -216,47 +272,56 @@ function LoginPage({ onLoginSuccess }) {
                   </div>
 
                   {error && (
-                    <p className="mt-2 text-xs font-medium text-red-600">
+                    <p className="mt-2 text-xs font-semibold text-red-600">
                       {error}
                     </p>
                   )}
 
-                  <p className="mt-2 text-xs leading-5 text-muted">
-                    Prototype में यह field simulated है। Production में
-                    authorized identity verification integration का उपयोग किया
-                    जाएगा।
+                  <p className="mt-2 text-[11px] sm:text-xs leading-4 text-muted">
+                    {language === "hi"
+                      ? "प्रोटोटाइप मूल्यांकन: परीक्षण के लिए कोई भी 12-अंकीय संख्या स्वीकार्य है।"
+                      : "Prototype evaluation: Any 12-digit numeric input is accepted for authentication testing."}
                   </p>
                 </div>
 
                 <button
                   type="submit"
                   disabled={identifier.length !== 12}
-                  className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 text-sm font-semibold text-white transition-colors hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-50"
+                  className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-primary-dark active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  Get OTP
+                  <span>
+                    {language === "hi" ? "OTP प्राप्त करें" : "Get OTP"}
+                  </span>
                   <ArrowRight className="size-4" />
                 </button>
               </form>
             ) : (
               /* ================= OTP STEP ================= */
-              <form onSubmit={handleVerifyOtp} className="space-y-6">
-                <div className="rounded-xl bg-background p-4">
-                  <p className="text-xs text-muted">
-                    OTP sent to registered mobile
+              <form
+                onSubmit={handleVerifyOtp}
+                className="space-y-5 sm:space-y-6"
+              >
+                <div className="rounded-xl border border-slate-100 bg-slate-50/80 p-3 sm:p-4">
+                  <p className="text-[11px] sm:text-xs font-medium text-muted">
+                    {language === "hi"
+                      ? "पंजीकृत पहचान पर भेजा गया OTP"
+                      : "OTP sent to registered identity"}
                   </p>
 
-                  <p className="mt-1 text-sm font-semibold text-foreground">
-                    {identifier.replace(/\d(?=\d{4})/g, "•")}
+                  <p className="mt-1 font-mono text-xs sm:text-sm font-bold text-foreground">
+                    •••• •••• {identifier.slice(-4) || "1001"}
                   </p>
                 </div>
 
-                {/* OTP */}
+                {/* OTP Segmented Inputs */}
                 <div>
-                  <label className="mb-3 block text-sm font-medium text-foreground">
-                    Enter 6-digit OTP
+                  <label className="mb-2.5 block text-xs sm:text-sm font-semibold text-foreground">
+                    {language === "hi"
+                      ? "6-अंकों का OTP दर्ज करें"
+                      : "Enter 6-digit OTP"}
                   </label>
 
-                  <div className="flex gap-2 sm:gap-3">
+                  <div className="flex justify-between gap-1.5 sm:gap-2.5">
                     {otp.map((digit, index) => (
                       <input
                         key={index}
@@ -271,14 +336,14 @@ function LoginPage({ onLoginSuccess }) {
                         onPaste={index === 0 ? handleOtpPaste : undefined}
                         inputMode="numeric"
                         maxLength={1}
-                        className="h-12 w-full rounded-xl border border-border bg-background text-center text-lg font-semibold text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
+                        className="h-12 w-full max-w-[48px] rounded-xl border border-border bg-background text-center font-mono text-lg font-bold text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/15 sm:h-13"
                         aria-label={`OTP digit ${index + 1}`}
                       />
                     ))}
                   </div>
 
                   {error && (
-                    <p className="mt-2 text-xs font-medium text-red-600">
+                    <p className="mt-2 text-xs font-semibold text-red-600">
                       {error}
                     </p>
                   )}
@@ -287,51 +352,63 @@ function LoginPage({ onLoginSuccess }) {
                 <button
                   type="submit"
                   disabled={otp.join("").length !== 6}
-                  className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 text-sm font-semibold text-white transition-colors hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-50"
+                  className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-primary-dark active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  Verify & Continue
+                  <span>
+                    {language === "hi"
+                      ? "सत्यापित करें और रिकॉर्ड देखें"
+                      : "Verify & Access Records"}
+                  </span>
                   <ArrowRight className="size-4" />
                 </button>
 
-                <div className="flex items-center justify-between text-sm">
+                <div className="flex items-center justify-between text-xs sm:text-sm pt-1">
                   <button
                     type="button"
                     onClick={handleChangeIdentifier}
-                    className="inline-flex items-center gap-1.5 font-medium text-muted transition-colors hover:text-primary"
+                    className="inline-flex items-center gap-1 font-semibold text-muted transition-colors hover:text-primary"
                   >
-                    <ArrowLeft className="size-4" />
-                    Change ID
+                    <ArrowLeft className="size-3.5" />
+                    {language === "hi" ? "नंबर बदलें" : "Change Number"}
                   </button>
 
                   <button
                     type="button"
-                    className="font-medium text-primary hover:underline"
+                    onClick={() => {
+                      setOtp(["1", "2", "3", "4", "5", "6"]);
+                      setError("");
+                    }}
+                    className="font-semibold text-primary hover:underline"
                   >
-                    Resend OTP
+                    {language === "hi" ? "डेमो OTP भरें" : "Auto-Fill Demo OTP"}
                   </button>
                 </div>
               </form>
             )}
 
-            {/* Security Note */}
-            <div className="mt-6 flex gap-3 rounded-xl bg-secondary/5 p-4">
-              <ShieldCheck className="mt-0.5 size-4 shrink-0 text-secondary" />
-
-              <p className="text-xs leading-5 text-muted">
-                Your access is designed around secure authentication, consent
-                and controlled access to available records.
+            {/* Security Guarantee Note */}
+            <div className="mt-6 flex items-start gap-2.5 rounded-xl bg-slate-50 border border-slate-200/80 p-3 sm:p-3.5">
+              <ShieldCheck className="mt-0.5 size-4 shrink-0 text-emerald-600" />
+              <p className="text-[11px] leading-4 text-muted">
+                {language === "hi"
+                  ? "DILRMP & Bhu-Aadhaar अनुपालन: एन्क्रिप्टेड सत्र, पूर्ण डेटा सुरक्षा गारंटी।"
+                  : "DILRMP & Bhu-Aadhaar compliance: Encrypted session, zero credential leak guarantee."}
               </p>
             </div>
           </div>
 
-          {/* Back */}
+          {/* Back Navigation Link */}
           <div className="mt-6 text-center">
-            <a
-              href="/"
-              className="text-sm font-medium text-muted transition-colors hover:text-primary"
+            <button
+              type="button"
+              onClick={handleBackNavigation}
+              className="text-xs sm:text-sm font-semibold text-muted transition-colors hover:text-primary"
             >
-              ← Back to LandStack
-            </a>
+              ←{" "}
+              {language === "hi"
+                ? "होम पर वापस जाएं"
+                : "Back to LandStack Home"}
+            </button>
           </div>
         </div>
       </section>

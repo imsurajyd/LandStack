@@ -1,3 +1,4 @@
+// src/components/landing/Features.jsx
 import {
   Database,
   Map,
@@ -5,32 +6,43 @@ import {
   FileSearch,
   ArrowUpRight,
 } from "lucide-react";
+import { useLanguage } from "../../context/LanguageContext";
 
 function Features() {
+  const { language } = useLanguage();
+
   const features = [
     {
       icon: Database,
-      title: "Unified Land Records",
+      title: language === "hi" ? "एकीकृत भूमि अभिलेख" : "Unified Land Records",
       description:
-        "अलग-अलग जगहों पर उपलब्ध आपकी land information को एक unified view में देखें।",
+        language === "hi"
+          ? "अलग-अलग विभागों में उपलब्ध अपनी सभी ज़मीनी जानकारियों को एक एकीकृत दृश्य में देखें।"
+          : "Access all your consolidated land records across multiple districts in a single unified dashboard.",
     },
     {
       icon: Map,
-      title: "Land on Map",
+      title: language === "hi" ? "नक्शे पर भूमि सीमांकन" : "Land on Cadastral Map",
       description:
-        "अपनी land parcels और उनकी available location information को map पर explore करें।",
+        language === "hi"
+          ? "अपने भूमि पार्सल और उपलब्ध प्रशासनिक सीमाओं को डिजिटल कैडस्ट्रल मैप पर देखें।"
+          : "Explore your parcel boundaries, survey plots, and spatial demarcations on an interactive map.",
     },
     {
       icon: ShieldCheck,
-      title: "Ownership Details",
+      title: language === "hi" ? "स्वामित्व एवं वित्तीय भार" : "Ownership & Lien Details",
       description:
-        "उपलब्ध ownership और parcel-related information को एक जगह आसानी से देखें।",
+        language === "hi"
+          ? "सत्यापित रैयत जानकारी, खाता संख्या, और CERSAI बैंक बंधक स्थिति एक ही जगह आसानी से जांचें।"
+          : "Review verified Raiyat ownership, Khata-Khesra logs, and active CERSAI bank mortgage statuses.",
     },
     {
       icon: FileSearch,
-      title: "Case & Status",
+      title: language === "hi" ? "मुकदमा एवं कानूनी स्थिति" : "Litigation & Court Status",
       description:
-        "Available records के आधार पर land case, proceeding और status information देखें।",
+        language === "hi"
+          ? "डिजिटल ई-कोर्ट एवं राजस्व न्यायालयों से जुड़े मामलों और कार्यवाहियों की अद्यतन स्थिति देखें।"
+          : "Track connected revenue proceedings, e-Court hearings, and legal dispute disclaimers in real time.",
     },
   ];
 
@@ -40,17 +52,27 @@ function Features() {
         {/* Section Header */}
         <div className="mx-auto max-w-2xl text-center">
           <span className="text-sm font-semibold uppercase tracking-wider text-secondary">
-            One Platform
+            {language === "hi" ? "एकल डिजिटल मंच" : "One Platform"}
           </span>
 
           <h2 className="mt-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-            Everything about your land,
-            <span className="block text-primary">in one place.</span>
+            {language === "hi" ? (
+              <>
+                आपकी जमीन का हर विवरण,
+                <span className="block text-primary">एक ही जगह पर।</span>
+              </>
+            ) : (
+              <>
+                Everything about your land,
+                <span className="block text-primary">in one place.</span>
+              </>
+            )}
           </h2>
 
           <p className="mt-4 text-base leading-7 text-muted">
-            LandStack का उद्देश्य available land information को simple,
-            accessible और easy-to-understand experience में दिखाना है।
+            {language === "hi"
+              ? "LandStack का उद्देश्य भूमि अभिलेखों को सरल, पारदर्शी और आसानी से समझने योग्य डिजिटल अनुभव में बदलना है।"
+              : "LandStack delivers a unified, citizen-centric land intelligence experience that simplifies verification and transparent ownership."}
           </p>
         </div>
 
@@ -80,7 +102,7 @@ function Features() {
 
                 {/* Small Action */}
                 <div className="mt-6 flex items-center gap-1.5 text-sm font-semibold text-primary">
-                  Explore
+                  <span>{language === "hi" ? "विवरण देखें" : "Explore"}</span>
                   <ArrowUpRight className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </div>
               </div>

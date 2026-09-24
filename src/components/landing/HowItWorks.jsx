@@ -1,3 +1,4 @@
+// src/components/landing/HowItWorks.jsx
 import {
   ArrowRight,
   CheckCircle2,
@@ -5,29 +6,38 @@ import {
   ShieldCheck,
   UserRoundCheck,
 } from "lucide-react";
+import { useLanguage } from "../../context/LanguageContext";
 
 function HowItWorks() {
+  const { language } = useLanguage();
+
   const steps = [
     {
       number: "01",
       icon: UserRoundCheck,
-      title: "Verify",
+      title: language === "hi" ? "सत्यापित करें" : "Verify",
       description:
-        "Secure identity verification के बाद अपने land dashboard तक पहुँचें।",
+        language === "hi"
+          ? "सुरक्षित नागरिक पहचान सत्यापन के बाद सीधे अपने एकीकृत डैशबोर्ड तक पहुँचें।"
+          : "Access your centralized land dashboard after instant, secure citizen verification.",
     },
     {
       number: "02",
       icon: Search,
-      title: "View",
+      title: language === "hi" ? "अभिलेख देखें" : "View",
       description:
-        "एक जगह उपलब्ध अपनी land parcels और उनके related information को देखें।",
+        language === "hi"
+          ? "एक ही स्थान पर सभी जिलों में फैली अपनी भूमि, रकबा और स्वामित्व विवरण देखें।"
+          : "View all your registered land holdings, acreages, and clear title statuses in one place.",
     },
     {
       number: "03",
       icon: CheckCircle2,
-      title: "Explore",
+      title: language === "hi" ? "सीमांकन व स्थिति" : "Explore",
       description:
-        "Parcel details, map, records और available case status को explore करें।",
+        language === "hi"
+          ? "कैडस्ट्रल नक्शा, CERSAI बैंक बंधक और ई-कोर्ट विवादों की लाइव स्थिति जांचें।"
+          : "Demarcate boundaries on GIS maps, review active bank liens, and print certified records.",
     },
   ];
 
@@ -37,15 +47,17 @@ function HowItWorks() {
         {/* Header */}
         <div className="mx-auto max-w-2xl text-center">
           <span className="text-sm font-semibold uppercase tracking-wider text-secondary">
-            Simple Process
+            {language === "hi" ? "सरल कार्यप्रणाली" : "Simple Process"}
           </span>
 
           <h2 className="mt-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-            How LandStack works
+            {language === "hi" ? "लैंडस्टैक कैसे कार्य करता है" : "How LandStack works"}
           </h2>
 
           <p className="mt-4 text-base leading-7 text-muted">
-            कुछ simple steps में अपनी available land information तक पहुँचें।
+            {language === "hi"
+              ? "केवल तीन आसान चरणों में अपनी सभी जमीनी जानकारियों तक पहुँचें।"
+              : "Access and verify your statewide land portfolio in three simple steps."}
           </p>
         </div>
 
@@ -98,12 +110,15 @@ function HowItWorks() {
 
           <div>
             <h3 className="font-semibold text-foreground">
-              Secure and user-focused access
+              {language === "hi"
+                ? "सुरक्षित एवं नागरिक-केंद्रित पहुँच"
+                : "Secure and user-focused access"}
             </h3>
 
             <p className="mt-1 text-sm leading-6 text-muted">
-              User को केवल authorized और available information तक controlled
-              access देने के लिए platform design किया जाएगा।
+              {language === "hi"
+                ? "नागरिकों को केवल उनके अधिकृत और डिजिटल राजस्व अभिलेखों तक सुरक्षित पहुँच प्रदान करने के लिए प्रणाली तैयार की गई है।"
+                : "Designed to provide citizens strictly authorized, encrypted access to integrated land registry records."}
             </p>
           </div>
         </div>
