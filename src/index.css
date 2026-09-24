@@ -8,6 +8,7 @@
     -apple-system,
     BlinkMacSystemFont,
     "Segoe UI",
+    Roboto,
     sans-serif;
 
   color: #0f172a;
@@ -32,6 +33,7 @@ body {
   min-width: 320px;
   min-height: 100vh;
   background: #f8fafc;
+  color: #0f172a;
 }
 
 button,
@@ -50,18 +52,30 @@ a {
   text-decoration: none;
 }
 
+/* ========================================================
+   ENTERPRISE GOV-TECH / DPI UTILITY TOKENS
+======================================================== */
 @theme {
-  --color-primary: #123b5d;
-  --color-primary-dark: #0e304b;
+  /* Institutional Navy & Steel */
+  --color-primary: #1e3a8a;          /* Deep Trust Navy */
+  --color-primary-dark: #172554;
+  --color-primary-light: #2563eb;
 
-  --color-secondary: #1f7a5a;
+  /* Sovereign Data & Agricultural Accents */
+  --color-secondary: #059669;        /* Verified Emerald */
+  --color-secondary-dark: #047857;
 
+  /* Backgrounds & Clean Borders */
   --color-background: #f8fafc;
+  --color-surface: #ffffff;
   --color-foreground: #0f172a;
   --color-muted: #64748b;
   --color-border: #e2e8f0;
+  --color-border-subtle: #f1f5f9;
 
-  --font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
+  /* Typography */
+  --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
 @layer base {
@@ -81,4 +95,19 @@ a {
     color: var(--color-foreground);
     font-family: var(--font-sans);
   }
+}
+
+/* Subtle Top Accent (Clean Blue to Emerald Tech Gradient, Not Flag) */
+.platform-accent-bar {
+  height: 3px;
+  width: 100%;
+  background: linear-gradient(90deg, #1e3a8a 0%, #2563eb 50%, #059669 100%);
+}
+
+/* Institutional Structured Cards */
+.tech-gov-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.05);
 }
