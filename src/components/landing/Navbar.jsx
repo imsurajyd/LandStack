@@ -74,7 +74,7 @@ function Navbar({ onLogin }) {
       {/* Top Navbar Header */}
       <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-4 sm:h-20 sm:px-6 lg:px-8">
         <a href="#home" className="flex items-center">
-          <BrandLogo size="md" />
+          <BrandLogo size="lg" />
         </a>
 
         {/* Desktop Navigation */}

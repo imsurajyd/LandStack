@@ -283,7 +283,7 @@ export default function DocumentModal({ docData, land, ownerName, onClose }) {
                 <div class="seal-container">
                   <div class="seal-left">
                     <p>Digitally Authenticated Certificate</p>
-                    <span>Issued via LandStack Centralized Gateway</span>
+                    <span>Issued via Bhusetu Centralized Gateway</span>
                   </div>
                   <div class="seal-right">
                     <p>SHA256-VERIFIED</p>
@@ -292,7 +292,7 @@ export default function DocumentModal({ docData, land, ownerName, onClose }) {
                 </div>
 
                 <div class="disclaimer-box">
-                  This electronic transcript is generated for prototype evaluation under LandStack Digital Land Governance. 
+                  This electronic transcript is generated for prototype evaluation under Bhusetu Digital Land Governance. 
                   Data synchronized with state revenue registers and central credit security databases.
                 </div>
               </div>
@@ -461,7 +461,7 @@ export default function DocumentModal({ docData, land, ownerName, onClose }) {
                   Digitally Authenticated
                 </p>
                 <p className="text-[8px] sm:text-[9px] text-slate-600">
-                  LandStack Centralized Gateway
+                  Bhusetu Centralized Gateway
                 </p>
               </div>
               <div className="text-right">
@@ -475,7 +475,7 @@ export default function DocumentModal({ docData, land, ownerName, onClose }) {
             </div>
 
             <p className="mt-3.5 border-t border-dotted border-slate-300 pt-1.5 text-center font-sans text-[8px] text-slate-400">
-              Electronic transcript generated for prototype evaluation under LandStack Digital Governance.
+              Electronic transcript generated for prototype evaluation under Bhusetu Digital Governance.
             </p>
           </div>
         </div>

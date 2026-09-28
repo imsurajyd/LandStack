@@ -28,7 +28,7 @@ export default function BrandLogo({
         <div
           className={`${currentSize.title} font-bold tracking-tight text-primary`}
         >
-          Land<span className="text-secondary">Stack</span>
+          Bhusetu
         </div>
 
         {showTagline && (

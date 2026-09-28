@@ -84,7 +84,7 @@ function Footer() {
 
         {/* Bottom Bar */}
         <div className="mt-12 flex flex-col gap-3 border-t border-border pt-6 text-xs text-muted sm:flex-row sm:items-center sm:justify-between">
-          <p>© {new Date().getFullYear()} LandStack. {language === "hi" ? "सर्वाधिकार सुरक्षित।" : "All rights reserved."}</p>
+          <p>© {new Date().getFullYear()} Bhusetu. {language === "hi" ? "सर्वाधिकार सुरक्षित।" : "All rights reserved."}</p>
           <p>DILRMP & Bhu-Aadhaar Aligned Prototype</p>
         </div>
       </div>

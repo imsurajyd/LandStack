@@ -51,7 +51,7 @@ function HowItWorks() {
           </span>
 
           <h2 className="mt-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-            {language === "hi" ? "लैंडस्टैक कैसे कार्य करता है" : "How LandStack works"}
+            {language === "hi" ? "भूसेतु कैसे कार्य करता है" : "How Bhusetu works"}
           </h2>
 
           <p className="mt-4 text-base leading-7 text-muted">
